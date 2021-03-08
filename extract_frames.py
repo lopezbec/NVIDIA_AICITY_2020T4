@@ -54,7 +54,8 @@ for video_name in tqdm.tqdm(video_names):
     else:
         rval = False
 
-    timeF =100   
+    timeF = int(float(sys.argv[0]))
+    
 
     while rval: 
         rval, frame = vc.read()
@@ -93,16 +94,13 @@ for vn in video_names:
             # print(os.path.join(dest_dir,video_name,str(start_frame)+'.jpg'))
             # print(os.path.join(dest_dir,video_name,str(i*internal_frame+start_frame)+'.jpg'))
             now_im = cv2.imread(os.path.join(dest_dir,video_name,str(i*internal_frame+start_frame)+'.jpg'))
-            print(num_pic)
-            if np.mean(np.abs(now_im-former_im))>5:
-                img = img*(1-alpha)+now_im*alpha
-                cv2.imwrite(dest_dir_processed+video_name+'/'+str(i*internal_frame+start_frame)
-                        +'_'+str(j)+'.jpg',img)
-            else:
-                cv2.imwrite(dest_dir_processed+video_name+'/'+str(i*internal_frame+start_frame)
-                        +'_'+str(j)+'.jpg',img*0)
-            former_im = now_im
-
-
-
+            if now_im is not None:
+              if np.mean(np.abs(now_im-former_im))>5:
+                  img = img*(1-alpha)+now_im*alpha
+                  cv2.imwrite(dest_dir_processed+video_name+'/'+str(i*internal_frame+start_frame)
+                          +'_'+str(j)+'.jpg',img)
+              else:
+                  cv2.imwrite(dest_dir_processed+video_name+'/'+str(i*internal_frame+start_frame)
+                          +'_'+str(j)+'.jpg',img*0)
+              former_im = now_im
 
