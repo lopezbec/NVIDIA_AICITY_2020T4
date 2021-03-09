@@ -19,11 +19,12 @@ with open('Masks/part2.json', 'r') as f:
 
 
 # In[ ]:
+Folder = [];
 
-
-Folder = set(np.arange(1,101))-set(np.array([ 1,  4,  6,  9, 11, 15, 16, 17, 22, 24, 27, 28, 29, 30, 34, 35, 37,38, 40, 41, 42, 44, 46, 52, 54, 57, 63, 68, 71, 75, 76, 79, 80, 81,82, 84, 89, 96]))
-Folder = list(Folder)
-
+for frame in D:
+  Folder.append(frame['filename'].split('/')[7])
+ 
+Folder = list(set(Folder))
 
 # In[115]:
 
@@ -32,15 +33,15 @@ i = 0
 names = ["car","bus","truck"]
 
 for frame in D:
-#     print(frame['filename'],frame['filename'].split('/')[4])
-    if frame['filename'].split('/')[4] == str(Folder[i]):
+#    print(frame['filename'],frame['filename'].split('/')[7])
+    if frame['filename'].split('/')[7] == str(Folder[i]):
 
         file1 = open("Masks/" +str(Folder[i]) + ".txt","a")
-#         print(frame['filename'])
+        
         for bound in frame['objects']:
             if bound['name'] in names:
-                frame_n = frame['filename'].split('/')[5].split('.')[0]
-#                 print(frame_n)
+                frame_n = frame['filename'].split('/')[8].split('.')[0].split('_')[0]
+                print(frame_n)
                 a = -1
                 b = bound['relative_coordinates']['center_x']*800
                 c = bound['relative_coordinates']['center_y']*410
@@ -80,13 +81,13 @@ names = ["car","bus","truck"]
 
 for frame in D:
 #     print(frame['filename'],frame['filename'].split('/')[4])
-    if frame['filename'].split('/')[4] == str(Folder[i]):
+    if frame['filename'].split('/')[7] == str(Folder[i]):
 
         file1 = open("Masks/" +str(Folder[i]) + ".txt","a")
 #         print(frame['filename'])
         for bound in frame['objects']:
             if bound['name'] in names:
-                frame_n = frame['filename'].split('/')[5].split('.')[0]
+                frame_n = frame['filename'].split('/')[8].split('.')[0].split('_')[0]
 #                 print(frame_n)
                 a = -1
                 b = bound['relative_coordinates']['center_x']*800
