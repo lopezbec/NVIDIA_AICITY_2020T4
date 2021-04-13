@@ -54,11 +54,13 @@ else:
     change_cam, loc,Cstat = change_detect(Base)
     np.save("change.npy",[change_cam,loc,Cstat])
 
+print(change_cam)
+print(loc)
+print(Cstat)
 
 # In[7]:
 
-
-PT = ['cam_1']
+PT = list(set(AT) - set(change_cam))
 
 
 # ## Case 1: Extract ROI
@@ -112,7 +114,7 @@ else:
     Times, Stat = backtrack(Bounds,PT,Base)
     np.save("result1.npy",[Times,Stat])
 
-
+print(Times)
 # ## Case 2: Extract ROI 
 
 # In[13]:
@@ -123,6 +125,7 @@ if path.exists("centers2.npy"):
 else:
     Centers2 = extract_roi1(change_cam,All_Cords,loc)
     np.save("centers2.npy",Centers2)
+
 
 
 # ## Case 2: Extract Bounds
@@ -164,6 +167,8 @@ else:
     np.save("result2.npy",[Times2,Stat2])
 
 
+
+
 # In[18]:
 
 
@@ -172,6 +177,9 @@ Times = {key:val for key, val in Times.items() if val >= 40}
 
 Times2 = {key:val for key, val in Times2.items() if val != 999}
 Times2 = {key:val for key, val in Times2.items() if val >= 40}
+
+print(Times)
+print(Times2)
 
 
 # In[23]:
@@ -190,7 +198,3 @@ file1.close()
 
 
 # In[ ]:
-
-
-
-

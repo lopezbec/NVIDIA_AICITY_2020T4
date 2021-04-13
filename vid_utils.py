@@ -13,6 +13,7 @@ from skimage import measure
 from scipy.signal import savgol_filter
 from matplotlib.patches import Rectangle
 
+videos_number= 15
 
 
 def Kmeans_clu(data,k):
@@ -264,7 +265,7 @@ def extract_objects(D):
 
 def extract_cases(All_Cords):
     maxes = list()
-    for i in range(0,100):
+    for i in range(0,videos_number):
 
         T = np.array(All_Cords[i],dtype=object)
         AT = [item for sublist in T for item in sublist]
@@ -307,8 +308,8 @@ def extract_roi(PT,All_Cords):
     Centers = list()
     for i in PT: 
 
-        Mask = np.load("Masks/Mas/" + str(i)+ ".npy")
-        T = np.array(All_Cords[i-1])
+        Mask = np.load("Masks/Mas/" + str(i)+".npy")
+        T = np.array(All_Cords[i-1],dtype=object)
         AT = [item for sublist in T for item in sublist]
         AT = np.array(np.array(AT)).reshape(-1,5)
         if AT.shape[0] > 20:
@@ -388,7 +389,7 @@ def extract_bounds(Centers,PT,All_Cords):
     Bounds = list()
     for centro in Centers:
 
-        T = np.array(All_Cords[-1+PT[count]])
+        T = np.array(All_Cords[-1+PT[count]],dtype=object)
         AT = [item for sublist in T for item in sublist]
         AT = np.array(np.array(AT)).reshape(-1,5)
 
@@ -443,13 +444,13 @@ def extract_bounds1(Centers,cam_change,loc,All_Cords):
 
         
 def change_detect(Base):
-    
     All_stat3= list()
     Folders = natsorted(os.listdir(Base))
     for i in range(len(Folders)):
 
         base2 = Base + str(Folders[i]) + "/" 
         files = natsorted(os.listdir(base2))
+        
         stat = list()
 
         for idx in range(1,len(files)-10,10):
@@ -463,15 +464,20 @@ def change_detect(Base):
                 sad = 0.99
             stat.append(np.max((0,sad)))
         All_stat3.append(stat)    
+
         
     cam_change = list()
     loc = list()
     for ss in range(len(All_stat3)):
 #             if len(np.where(np.array(All_stat3[ss]) < 0.87)[0]) > 0:
+        
         if np.mean(All_stat3[ss]) - np.min((All_stat3[ss])) > 0.06:
             cam_change.append(ss+1)
             loc.append(-2+np.where(np.array(All_stat3[ss]) == np.min((All_stat3[ss])))[0][0])
                 
+    print("All_stat3",All_stat3)
+    print("cam_change",cam_change)
+    print("loc",loc)
     return cam_change, loc, All_stat3
 
 def backtrack(Bounds, PT,Base):
@@ -479,6 +485,7 @@ def backtrack(Bounds, PT,Base):
     for i in range(0,len(Bounds)):
         if Bounds[i][1] in PT:
             base2 = Base + str(Bounds[i][1]) + "/" 
+            
             files = natsorted(os.listdir(base2))
             stat = list()
             back_len = int(Bounds[i][0][4]*100)
@@ -491,10 +498,11 @@ def backtrack(Bounds, PT,Base):
             img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
 
             for idx in range(np.min((26750,2*back_len)),90,-5):
-                img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
-                img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+                if idx%10==0:
+                  img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
+                  img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 
-                stat.append(measure.compare_ssim(img0,img1,multichannel=True,win_size=3))
+                  stat.append(measure.compare_ssim(img0,img1,multichannel=True,win_size=3))
 
 
             for idx in range(0,len(stat)-35):
@@ -542,10 +550,11 @@ def backtrack1(Bounds,Base):
         img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
 
         for idx in range(np.min((26750,2*back_track)),90,-5):
-            img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
-            img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+            if idx%10==0:
+              img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
+              img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 
-            stat.append(measure.compare_ssim(img0,img1,multichannel=True,win_size=3))
+              stat.append(measure.compare_ssim(img0,img1,multichannel=True,win_size=3))
 
 
         for idx in range(0,len(stat)-35):
@@ -577,13 +586,3 @@ def backtrack1(Bounds,Base):
         count+=1
         
     return Times,All_statfn
-        
-                    
-        
-        
-
-                    
-    
-        
-                    
-    

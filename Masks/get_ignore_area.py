@@ -4,16 +4,33 @@ from scipy.ndimage.filters import gaussian_filter
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-video_ids = np.arange(1,101)
-# video_ids = [1]
+import json
+
+
 count_thred = 0.02
 min_area = 500
 gass_sigma = 2
 score_thred = 0.1
 
-for video_id in video_ids:
+def get_video_names():
+  video_names = []
+  
+  with open('../dataset.json', 'r') as f:
+    data = json.load(f)
+
+  
+  for video in data['videos']:
+    video_names.append(video['name'].split('.')[0])
+
+  return video_names
+
+
+#video_names = read_video_file_names("/content/gdrive/Shared drives/UASD Fondocyt Proyecto 911/Datasets/AI city challenge/AIC20_track1/Dataset_A/",'list_video_id.txt')
+video_names=get_video_names()
+
+for video_name in video_names:
 	dt_results_fbf = {}
-	with open("%s.txt"%(video_id),'r') as f:
+	with open("%s.txt"%(video_name),'r') as f:
 		for line in f:
 			line = line.rstrip()
 			word = line.split(',')
@@ -28,7 +45,7 @@ for video_id in video_ids:
 			if score > score_thred :
 				dt_results_fbf[frame].append([x1,y1,x1+tmp_w,y1+tmp_h,score])
 
-	# im = cv2.imread("data/AIC_Track3/ori_images/%s/1.jpg"%video_id)
+	# im = cv2.imread("data/AIC_Track3/ori_images/%s/1.jpg"%video_name)
 
 	h = 410
 	w = 800
@@ -59,4 +76,4 @@ for video_id in video_ids:
 	mask = mask.astype(float)
 	k = gaussian_filter(mask,gass_sigma)
 	mask = k>count_thred
-	np.save("Mas/%s.npy"%str(video_id),mask)
+	np.save("Mas/%s.npy"%str(video_name),mask)
