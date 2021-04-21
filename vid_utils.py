@@ -12,6 +12,7 @@ import os
 from skimage import measure
 from scipy.signal import savgol_filter
 from matplotlib.patches import Rectangle
+from google.colab.patches import cv2_imshow
 
 videos_number= 15
 
@@ -474,17 +475,17 @@ def change_detect(Base):
         if np.mean(All_stat3[ss]) - np.min((All_stat3[ss])) > 0.06:
             cam_change.append(ss+1)
             loc.append(-2+np.where(np.array(All_stat3[ss]) == np.min((All_stat3[ss])))[0][0])
-                
-    print("All_stat3",All_stat3)
-    print("cam_change",cam_change)
-    print("loc",loc)
+     
     return cam_change, loc, All_stat3
 
 def backtrack(Bounds, PT,Base):
     All_statfn= list()
+    data={}
+    data['videos']=[]
     for i in range(0,len(Bounds)):
         if Bounds[i][1] in PT:
             base2 = Base + str(Bounds[i][1]) + "/" 
+           
             
             files = natsorted(os.listdir(base2))
             stat = list()
@@ -497,16 +498,26 @@ def backtrack(Bounds, PT,Base):
             img0 = cv2.imread(base2 + str(back_len) +".jpg")[y-h:y+h,x-w:x+w]
             img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
 
+            data['videos'].append({
+              'name':str(Bounds[i][1]),
+              'img0':str(back_len) +".jpg",
+              'imgs1':[],
+              'stat':[]
+            })
+
             for idx in range(np.min((26750,2*back_len)),90,-5):
                 if idx%10==0:
                   img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
                   img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-
-                  stat.append(measure.compare_ssim(img0,img1,multichannel=True,win_size=3))
+                  data['videos'][i]['imgs1'].append(str(idx)+".jpg")
+                  ssim = measure.compare_ssim(img0,img1,multichannel=True,win_size=3)
+                  data['videos'][i]["stat"].append(ssim)
+                  stat.append(ssim)
 
 
             for idx in range(0,len(stat)-35):
                 stat[idx] = np.max((stat[idx:idx+35]))
+                data['videos'][i]["stat"][idx] = np.max((stat[idx:idx+35]))
 
             All_statfn.append(stat)    
 
@@ -518,15 +529,33 @@ def backtrack(Bounds, PT,Base):
         count+=1
 
     count = 0
+    image_counter =0;
     for stat in All_statfn:
-
+        video = data['videos'][count]
+        video_name= video['name']       
+        
+      
         if np.max((stat)) > 0.5 and np.min((stat))<0.65:
             stat = savgol_filter(stat,21,1)
             nstat = (list(reversed(stat)) -min(stat))/(max(stat)-min(stat))
             Found = check_continual(nstat,150)
             if Found:
+                frame_image=video["imgs1"][image_counter]
+                print("video name:",video_name)
+                print("frame_image:",frame_image)
+                img = cv2.imread(base2+frame_image,cv2.IMREAD_UNCHANGED)
+                
+                scale_percent = 50 # percent of original size
+                width = int(img.shape[1] * scale_percent / 100)
+                height = int(img.shape[0] * scale_percent / 100)
+                dim = (width, height)
+                resized = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)                
+                cv2_imshow(resized)
+                
+                
                 Times[Bounds[count][1]] = np.min((Times[Bounds[count][1]],np.min(((np.where(np.array(nstat)>=0.4)[0][0])*5/30,Times[Bounds[count][1]]))))
-
+            
+            image_counter+=1
 
         count+=1
         
@@ -586,3 +615,17 @@ def backtrack1(Bounds,Base):
         count+=1
         
     return Times,All_statfn
+
+def imShow(path):
+  # Este es el famoso metodo para mostrar las imagenes
+ 
+  image = cv2.imread(path)
+  height, width = image.shape[:2]
+  resized_image = cv2.resize(image,(3*width, 3*height), interpolation = cv2.INTER_CUBIC)
+ 
+  fig = plt.gcf()
+  fig.set_size_inches(18, 10)
+  plt.axis("off")
+  plt.imshow(cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB))
+  plt.show()
+

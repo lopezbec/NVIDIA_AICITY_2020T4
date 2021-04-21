@@ -54,9 +54,6 @@ else:
     change_cam, loc,Cstat = change_detect(Base)
     np.save("change.npy",[change_cam,loc,Cstat])
 
-print(change_cam)
-print(loc)
-print(Cstat)
 
 # In[7]:
 
@@ -98,7 +95,6 @@ else:
 # In[11]:
 
 
-len(Bounds)
 
 
 # ## Case 1: Backtracking
@@ -114,7 +110,7 @@ else:
     Times, Stat = backtrack(Bounds,PT,Base)
     np.save("result1.npy",[Times,Stat])
 
-print(Times)
+print(len(Stat))
 # ## Case 2: Extract ROI 
 
 # In[13]:
@@ -161,7 +157,7 @@ Base = "ori_images/"
 
 
 if path.exists("result2.npy"):
-    Times2, Stat2 = np.load("result2.npy")
+    Times2, Stat2 = np.load("result2.npy",allow_pickle=True)
 else:
     Times2, Stat2 = backtrack1(Bounds2,Base)
     np.save("result2.npy",[Times2,Stat2])
@@ -178,8 +174,6 @@ Times = {key:val for key, val in Times.items() if val >= 40}
 Times2 = {key:val for key, val in Times2.items() if val != 999}
 Times2 = {key:val for key, val in Times2.items() if val >= 40}
 
-print(Times)
-print(Times2)
 
 
 # In[23]:
