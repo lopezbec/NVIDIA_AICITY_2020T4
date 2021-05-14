@@ -32,6 +32,7 @@ with open('result.json', 'r') as f:
 
 
 All_Cords = extract_objects(D)
+print(All_Cords)
 
 
 # ## Extract Cases
@@ -40,7 +41,7 @@ All_Cords = extract_objects(D)
 
 
 AT = extract_cases(All_Cords)
-
+print(AT)
 
 # ## Detect Change in Camera
 
@@ -55,10 +56,12 @@ else:
     np.save("change.npy",[change_cam,loc,Cstat])
 
 
+
 # In[7]:
 
 PT = list(set(AT) - set(change_cam))
 
+print(PT)
 
 # ## Case 1: Extract ROI
 
@@ -110,7 +113,7 @@ else:
     Times, Stat = backtrack(Bounds,PT,Base)
     np.save("result1.npy",[Times,Stat])
 
-print(len(Stat))
+print(Times)
 # ## Case 2: Extract ROI 
 
 # In[13]:

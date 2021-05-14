@@ -36,27 +36,29 @@ names = ["car","bus","truck"]
 
 for frame in D:
 #     print(frame['filename'],frame['filename'].split('/')[4])
+    
     folder_name = frame['filename'].split('/')[7]
-    if folder_name:
-        file1 = open("Masks/" +folder_name + ".txt","a")
+    
+    
+    file1 = open("Masks/" +folder_name + ".txt","a")
 #         print(frame['filename'])
-        for bound in frame['objects']:
-            if bound['name'] in names:
-                frame_n = frame['filename'].split('/')[8].split('.')[0].split('_')[0]
+    for bound in frame['objects']:
+        if bound['name'] in names:
+            frame_n = frame['filename'].split('/')[8].split('.')[0].split('_')[0]
 #                 print(frame_n)
-                a = -1
-                b = bound['relative_coordinates']['center_x']*800
-                c = bound['relative_coordinates']['center_y']*410
-                d = bound['relative_coordinates']['width']*800
-                e = bound['relative_coordinates']['height']*410
-                f = bound['confidence']
-                g = -1
-                h = -1
-                j = -1
-                line = [frame_n,a,b,c,d,e,f,g,h,j]
-                for l in line:
-                    file1.write(str(l)+",")
-                file1.write("\n")
-        file1.close()
+            a = -1
+            b = bound['relative_coordinates']['center_x']*800
+            c = bound['relative_coordinates']['center_y']*410
+            d = bound['relative_coordinates']['width']*800
+            e = bound['relative_coordinates']['height']*410
+            f = bound['confidence']
+            g = -1
+            h = -1
+            j = -1
+            line = [frame_n,a,b,c,d,e,f,g,h,j]
+            
+            for l in line:
+                file1.write(str(l)+",")
+            file1.write("\n")
+    file1.close()
         
-

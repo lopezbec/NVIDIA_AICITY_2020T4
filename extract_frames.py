@@ -10,30 +10,30 @@ import json
 #video_name = sys.argv[1]
 
 
-def get_video_names():
-  video_names = []
+def get_videos():
+  
   
   with open('dataset.json', 'r') as f:
     data = json.load(f)
 
   
-  for video in data['videos']:
-    video_names.append(video['name'])
+  videos = data['videos']
 
-  return video_names  
+  return videos  
 
 
 ori_images_txt = open("ori_images.txt","w")
-root = "/content/gdrive/Shareddrives/UASD Fondocyt Proyecto 911/Datasets/AI city challenge/AIC20_track4/test-data"
+
 dest_dir = "ori_images/"
-video_names=get_video_names()
+videos=get_videos()
+
 print("caputure videos")
-for video_name in tqdm.tqdm(video_names):
-    file_name = video_name
+for video in tqdm.tqdm(videos):
+    file_name = video['name'].split('.')[0]
     folder_name = dest_dir+file_name.split('.')[0]
     os.makedirs(folder_name,exist_ok=True)
    
-    vc = cv2.VideoCapture(root+'/'+video_name)
+    vc = cv2.VideoCapture(video['path'])
     
     c = 1
     if vc.isOpened():
@@ -68,8 +68,8 @@ print("average images")
 
 
 
-for vn in video_names:
-    video_name = vn.split('.')[0]
+for video in videos:
+    video_name = video['name'].split('.')[0]
     path_file_number=glob.glob(os.path.join(dest_dir,video_name,'*.jpg')) 
     internal_frame = 4
     start_frame = 100

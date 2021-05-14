@@ -14,7 +14,23 @@ from scipy.signal import savgol_filter
 from matplotlib.patches import Rectangle
 from google.colab.patches import cv2_imshow
 
-videos_number= 15
+
+
+
+def get_videos():
+  
+  
+  with open('dataset.json', 'r') as f:
+    data = json.load(f)
+
+  
+  videos = data['videos']
+
+  return videos 
+
+
+
+videos_number=len(get_videos())
 
 
 def Kmeans_clu(data,k):
@@ -103,164 +119,77 @@ def nms(boxes, overlapThresh):
 
 
 def extract_objects(D):
-    
-    c = 62
+    base = "ori_images"
+    videos = os.listdir(base)
+    c = 0
     valid_list = ['bus','truck','person','car','boat']
     All_Cords = list()
-    for vid in range(1,63):
-
-        Vid_Cords = list()
-        for file in range(22,266):
-            Frame_Cords = list()
-
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file 
-                        if w*h > 16 and w>4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
-
-            c+=1
-
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400 + 200
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file
-                        if w*h > 16 and w> 4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
-
-            c+=1
-
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400 + 400
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file
-                        if w*h > 16 and w>4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
-
-            c+=1
-
-            Frame_Cords = nms(np.array(Frame_Cords),0.9)
-            Vid_Cords.append(Frame_Cords)
-        c+=67
-        All_Cords.append(Vid_Cords)
-
-
-    for vid in range(63,64):
-        Vid_Cords = list()
-        for file in range(22,232):
-            Frame_Cords = list()
-
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file
-                        if w*h > 16 and w> 4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
-
-            c+=1
-
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400 + 200
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file
-                        if w*h > 16 and w>4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
-
-            c+=1
-
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400 + 400
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file
-                        if w*h > 16 and w>4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
-
-            c+=1
-
-            Frame_Cords = nms(np.array(Frame_Cords),0.9)
-            Vid_Cords.append(Frame_Cords)
-
-        c+=67
-        All_Cords.append(Vid_Cords)
-        
-
-    for vid in range(64,101):
     
+    for vid in videos:
+        base2 =  "ori_images/"+vid
         Vid_Cords = list()
-        for file in range(22,266):
-            Frame_Cords = list()
+        frames = os.listdir(base2)
+        
+        
+        for frame in frames:
+            
+            frame_number = int (frame.split(".")[0])
 
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file
-                        if w*h > 16 and w>4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
 
-            c+=1
+            if frame_number%100==0:
+              
+              Frame_Cords = list()
+            
 
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400 + 200
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file
-                        if w*h > 16 and w>4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
+              if (len(D[c]['objects']))!=0:
+                  for bound in D[c]['objects']:
+                      if bound['name'] in valid_list:
+                          x = bound['relative_coordinates']['center_x']*400
+                          y = bound['relative_coordinates']['center_y']*410
+                          h = bound['relative_coordinates']['height']*410
+                          w = bound['relative_coordinates']['width']*400
+                          f = c
+                          if w*h > 16 and w>4 and h>4:
+                              Frame_Cords.append([x,y,h,w,f])
 
-            c+=1
+              c+=1
+            
+            
+              if (len(D[c]['objects']))!=0:
+                  for bound in D[c]['objects']:
+                      if bound['name'] in valid_list:
+                          x = bound['relative_coordinates']['center_x']*400 + 200
+                          y = bound['relative_coordinates']['center_y']*410
+                          h = bound['relative_coordinates']['height']*410
+                          w = bound['relative_coordinates']['width']*400
+                          f = c
+                          if w*h > 16 and w> 4 and h>4:
+                              Frame_Cords.append([x,y,h,w,f])
 
-            if (len(D[c]['objects']))!=0:
-                for bound in D[c]['objects']:
-                    if bound['name'] in valid_list:
-                        x = bound['relative_coordinates']['center_x']*400 + 400
-                        y = bound['relative_coordinates']['center_y']*410
-                        h = bound['relative_coordinates']['height']*410
-                        w = bound['relative_coordinates']['width']*400
-                        f = file
-                        if w*h > 16 and w>4 and h>4:
-                            Frame_Cords.append([x,y,h,w,f])
+              c+=1
+            
+            
+              if (len(D[c]['objects']))!=0:
+                  for bound in D[c]['objects']:
+                      if bound['name'] in valid_list:
+                          x = bound['relative_coordinates']['center_x']*400 + 400
+                          y = bound['relative_coordinates']['center_y']*410
+                          h = bound['relative_coordinates']['height']*410
+                          w = bound['relative_coordinates']['width']*400
+                          f = c
+                          if w*h > 16 and w>4 and h>4:
+                              Frame_Cords.append([x,y,h,w,f])
 
-            c+=1
+              c+=1
+            
 
-            Frame_Cords = nms(np.array(Frame_Cords),0.9)
-            Vid_Cords.append(Frame_Cords)
-
-        c+=67
+              Frame_Cords = nms(np.array(Frame_Cords),0.9)
+              Vid_Cords.append(Frame_Cords)
+        
         All_Cords.append(Vid_Cords)
         
     return(All_Cords)
+
 
 
 
@@ -307,9 +236,10 @@ def extract_cases(All_Cords):
 
 def extract_roi(PT,All_Cords):
     Centers = list()
+    videos = get_videos()
     for i in PT: 
 
-        Mask = np.load("Masks/Mas/" + str(i)+".npy")
+        Mask = np.load("Masks/Mas/" + videos[i-1]['name'].split('.')[0]+".npy")
         T = np.array(All_Cords[i-1],dtype=object)
         AT = [item for sublist in T for item in sublist]
         AT = np.array(np.array(AT)).reshape(-1,5)
@@ -345,6 +275,7 @@ def extract_roi(PT,All_Cords):
 
 def extract_roi1(cam_change,All_Cords,loc):
     Centersf = list()
+    videos = get_videos()
     for i in range(0,len(cam_change)):
         Centers = list()
         T = np.array(All_Cords[cam_change[i]-1])
@@ -353,7 +284,7 @@ def extract_roi1(cam_change,All_Cords,loc):
         imx = np.where(AT[:,4] >= 10*loc[i])[0][0]
         AT = AT[0:imx,:]
 
-        Mask = np.load("Masks/Mas/" + str(cam_change[i])+ ".npy")
+        Mask = np.load("Masks/Mas/" + videos[i-1]['name'].split('.')[0]+".npy")
 
         if AT.shape[0] > 10:
             y = []
@@ -447,6 +378,7 @@ def extract_bounds1(Centers,cam_change,loc,All_Cords):
 def change_detect(Base):
     All_stat3= list()
     Folders = natsorted(os.listdir(Base))
+    
     for i in range(len(Folders)):
 
         base2 = Base + str(Folders[i]) + "/" 
@@ -482,12 +414,18 @@ def backtrack(Bounds, PT,Base):
     All_statfn= list()
     data={}
     data['videos']=[]
+    videos=get_videos()
+    
+
     for i in range(0,len(Bounds)):
+        
         if Bounds[i][1] in PT:
-            base2 = Base + str(Bounds[i][1]) + "/" 
+            
+            base2 = Base + videos[(Bounds[i][1]-1)]['name'].split('.')[0] + "/" 
            
             
             files = natsorted(os.listdir(base2))
+            
             stat = list()
             back_len = int(Bounds[i][0][4]*100)
             x = int(Bounds[i][0][0])
@@ -495,31 +433,48 @@ def backtrack(Bounds, PT,Base):
             h = int(Bounds[i][0][2]/2)
             w = int(Bounds[i][0][3]/2)
 
-            img0 = cv2.imread(base2 + str(back_len) +".jpg")[y-h:y+h,x-w:x+w]
-            img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
+            last_frame= int(str(files[len(files)-1]).split(".")[0])
 
-            data['videos'].append({
-              'name':str(Bounds[i][1]),
+          
+
+            if back_len>last_frame:
+              back_len=int(back_len/10)
+            
+            print(base2)
+            print(back_len,last_frame)
+
+
+            if back_len<=last_frame:
+              img0 = cv2.imread(base2 + str(back_len) +".jpg")[y-h:y+h,x-w:x+w]
+              img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
+
+              data['videos'].append({
+              'name':videos[(Bounds[i][1])-1]['name'].split('.')[0],
               'img0':str(back_len) +".jpg",
               'imgs1':[],
               'stat':[]
             })
 
-            for idx in range(np.min((26750,2*back_len)),90,-5):
-                if idx%10==0:
+              for idx in range(np.min((26750,2*back_len)),90,-5):
+                if idx%10==0 and idx<=last_frame:
+                  
                   img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
                   img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
-                  data['videos'][i]['imgs1'].append(str(idx)+".jpg")
+                 
                   ssim = measure.compare_ssim(img0,img1,multichannel=True,win_size=3)
-                  data['videos'][i]["stat"].append(ssim)
+                  
+                  
+                  data['videos'][len(data['videos'])-1]['imgs1'].append(str(idx)+".jpg")
+                  data['videos'][len(data['videos'])-1]["stat"].append(ssim)
+                  
                   stat.append(ssim)
 
 
-            for idx in range(0,len(stat)-35):
+              for idx in range(0,len(stat)-35):
                 stat[idx] = np.max((stat[idx:idx+35]))
-                data['videos'][i]["stat"][idx] = np.max((stat[idx:idx+35]))
+                data['videos'][len(data['videos'])-1]["stat"][idx] = np.max((stat[idx:idx+35]))
 
-            All_statfn.append(stat)    
+              All_statfn.append(stat)    
 
 
     Times = {}
@@ -528,22 +483,26 @@ def backtrack(Bounds, PT,Base):
         Times[Bounds[count][1]] = 999
         count+=1
 
+
     count = 0
-    image_counter =0;
     for stat in All_statfn:
         video = data['videos'][count]
         video_name= video['name']       
-        
-      
+        image_counter =0;
+
         if np.max((stat)) > 0.5 and np.min((stat))<0.65:
             stat = savgol_filter(stat,21,1)
             nstat = (list(reversed(stat)) -min(stat))/(max(stat)-min(stat))
             Found = check_continual(nstat,150)
-            if Found:
+            if Found:      
+                
                 frame_image=video["imgs1"][image_counter]
+                
+                print(image_counter)
                 print("video name:",video_name)
                 print("frame_image:",frame_image)
-                img = cv2.imread(base2+frame_image,cv2.IMREAD_UNCHANGED)
+           
+                img = cv2.imread(Base+video_name+"/"+frame_image,cv2.IMREAD_UNCHANGED)
                 
                 scale_percent = 50 # percent of original size
                 width = int(img.shape[1] * scale_percent / 100)
@@ -564,6 +523,9 @@ def backtrack(Bounds, PT,Base):
     
 def backtrack1(Bounds,Base):
     All_statfn= list()
+    data={}
+    data['videos']=[]
+
     for i in range(0,len(Bounds)):
         print(i)
         base2 = Base + str(Bounds[i][1]) + "/" 
@@ -575,57 +537,82 @@ def backtrack1(Bounds,Base):
         h = int(Bounds[i][0][2]/2)
         w = int(Bounds[i][0][3]/2)
 
-        img0 = cv2.imread(base2 + str(back_track) +".jpg")[y-h:y+h,x-w:x+w]
-        img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
+        last_frame= int((str(files[len(files)-1]).split(".")[0]))
 
-        for idx in range(np.min((26750,2*back_track)),90,-5):
-            if idx%10==0:
-              img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
-              img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+        if back_track>last_frame:
+          back_track =int(back_len/10);
 
-              stat.append(measure.compare_ssim(img0,img1,multichannel=True,win_size=3))
+        if back_len<=last_frame:
+          img0 = cv2.imread(base2 + str(back_track) +".jpg")[y-h:y+h,x-w:x+w]
+          img0 = cv2.cvtColor(img0, cv2.COLOR_BGR2GRAY)
+
+          for idx in range(np.min((26750,2*back_track)),90,-5):
+              if idx%10==0:
+                img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
+                img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+
+                data['videos'].append({
+                'name':videos[(Bounds[i][1])-1]['name'].split('.')[0],
+                'img0':str(back_len) +".jpg",
+                'imgs1':[],
+                'stat':[]
+                })
+
+                stat.append(measure.compare_ssim(img0,img1,multichannel=True,win_size=3))
 
 
-        for idx in range(0,len(stat)-35):
-            stat[idx] = np.max((stat[idx:idx+35]))
+          for idx in range(0,len(stat)-35):
+              stat[idx] = np.max((stat[idx:idx+35]))
+              data['videos'][0]["stat"][idx] = np.max((stat[idx:idx+35]))
 
 
-        All_statfn.append(stat)    
+          All_statfn.append(stat)    
         
         
     Times = {}
     count = 0
     for stat in All_statfn:
+        
         Times[Bounds[count][1]] = 999
 
         count+=1
 
     count = 0
+    image_counter =0;
+   
     for stat in All_statfn:
+        video = data['videos'][count]
+        video_name= video['name']  
         stat = reject_outliers(stat)
         if np.max((stat)) > 0.5 and np.min((stat))<0.55:
             stat = savgol_filter(stat,21,1)
 
             nstat = (list(reversed(stat)) -min(stat))/(max(stat)-min(stat))
             Found = check_continual(nstat,150)
+            
             if Found:
-                if (np.where(np.array(nstat)>=0.4))[0][0] != 0:
-                    Times[Bounds[count][1]] = np.min((Times[Bounds[count][1]],np.min(((np.where(np.array(nstat)>=0.5)[0][0])*5/30,Times[Bounds[count][1]]))))
+                
+              frame_image=video["img0"]
+              print("video name:",video_name)
+              print("frame_image:",frame_image)
+              img = cv2.imread(Base+video_name+"/"+frame_image,cv2.IMREAD_UNCHANGED)
+                
+              scale_percent = 50 # percent of original size
+              width = int(img.shape[1] * scale_percent / 100)
+              height = int(img.shape[0] * scale_percent / 100)
+              dim = (width, height)
+              resized = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)                
+              cv2_imshow(resized)
 
+
+              if (np.where(np.array(nstat)>=0.4))[0][0] != 0:
+                  Times[Bounds[count][1]] = np.min((Times[Bounds[count][1]],np.min(((np.where(np.array(nstat)>=0.5)[0][0])*5/30,Times[Bounds[count][1]]))))
+              
+              image_counter+=1
         count+=1
         
     return Times,All_statfn
 
-def imShow(path):
-  # Este es el famoso metodo para mostrar las imagenes
- 
-  image = cv2.imread(path)
-  height, width = image.shape[:2]
-  resized_image = cv2.resize(image,(3*width, 3*height), interpolation = cv2.INTER_CUBIC)
- 
-  fig = plt.gcf()
-  fig.set_size_inches(18, 10)
-  plt.axis("off")
-  plt.imshow(cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB))
-  plt.show()
 
+
+ 
