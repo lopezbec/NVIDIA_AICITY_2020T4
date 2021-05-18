@@ -25,7 +25,7 @@ def get_video_names():
   return video_names
 
 
-#video_names = read_video_file_names("/content/gdrive/Shared drives/UASD Fondocyt Proyecto 911/Datasets/AI city challenge/AIC20_track1/Dataset_A/",'list_video_id.txt')
+
 video_names=get_video_names()
 
 for video_name in video_names:

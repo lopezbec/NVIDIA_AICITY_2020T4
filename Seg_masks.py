@@ -37,14 +37,17 @@ names = ["car","bus","truck"]
 for frame in D:
 #     print(frame['filename'],frame['filename'].split('/')[4])
     
-    folder_name = frame['filename'].split('/')[7]
-    
+
+    folder_name = frame['filename'].split('/')[3]
+
     
     file1 = open("Masks/" +folder_name + ".txt","a")
 #         print(frame['filename'])
     for bound in frame['objects']:
         if bound['name'] in names:
-            frame_n = frame['filename'].split('/')[8].split('.')[0].split('_')[0]
+
+            frame_n = frame['filename'].split('/')[4].split('.')[0].split('_')[0]
+
 #                 print(frame_n)
             a = -1
             b = bound['relative_coordinates']['center_x']*800

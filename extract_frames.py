@@ -51,8 +51,7 @@ for video in tqdm.tqdm(videos):
        
         if (c % timeF == 0 and rval): 
             cv2.imwrite(pic_path + str(c) + '.jpg', frame)
-            ori_images_txt.write('/content/gdrive/MyDrive/Colab Notebooks'
-            +'/NVIDIA_AICITY/'+pic_path+str(c)+'.jpg')
+            ori_images_txt.write("../NVIDIA_AICITY/"+pic_path+str(c)+'.jpg')
             ori_images_txt.write('\n')
 
         c = c + 1

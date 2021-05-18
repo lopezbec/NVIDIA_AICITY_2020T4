@@ -25,5 +25,5 @@ for fo in folders:
 		cv2.imwrite(images_path[2],D[:,400:800,:])
 
 		for j in range(0,len(images_path)):
-			image_text_file.write('/content/gdrive/My Drive/Colab Notebooks/NVIDIA_AICITY/'+images_path[j])
+			image_text_file.write("../NVIDIA_AICITY/"+images_path[j])
 			image_text_file.write('\n')
