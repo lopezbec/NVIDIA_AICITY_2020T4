@@ -53,6 +53,10 @@ def load_dataset(path):
 
 #Choose the medium to pick up the videos
 def pick_source_menu():
+  
+  if !os.path.isdir("Data"):
+    os.mkdir("Data")
+  
   path=""
   option = input("Choose the medium to pick up the files\n"+
       "1.Use a Sample Video\n"+
@@ -155,6 +159,9 @@ def pick_up_from_google_drive():
 
 #Ask to remove the past files on the data folder
 def ask_clear_data_folder():
+  if !os.path.isdir("Data"):
+    os.mkdir("Data")
+  
   option = input("Do you want to clear Data folder ?\n"+
       "1.Yes\n"+
       "2.No\n")
