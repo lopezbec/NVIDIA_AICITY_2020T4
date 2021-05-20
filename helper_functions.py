@@ -13,12 +13,13 @@ from google.colab import files
 def upload(path):
   from google.colab import files
   uploaded = files.upload()
-  os.chdir(path) 
+  os.chdir("Data")
   for name, data in uploaded.items():
-    with open(path+name, 'wb') as f:
+    with open(name, 'wb') as f:
       f.write(data)
       print ('saved file', name)
-  os.chdir("..")
+  os.chdir("..")  
+  
  
 # use this to download a file  
 def download(path):
@@ -52,37 +53,27 @@ def load_dataset(path):
     json.dump(data,json_file)
 
 #Choose the medium to pick up the videos
-def pick_source_menu():
+def pick_source_menu(option):
   
   if os.path.isdir("Data")==False:
     os.mkdir("Data")
   
   path=""
-  option = input("Choose the medium to pick up the files\n"+
-      "1.Use a Sample Video\n"+
-      "2.My computer\n"+
-      "3.Google Drive\n"+
-      "4.Get out of the menu\n")
-  
-  if option=="1":
+ 
+  if option=="Sample Video":
    load_sample_video()
   
-  elif option=="2": # This option loads all videos located in the Data folder
+  elif option=="My Computer": # This option loads all videos located in the Data folder
     output.clear()
     print("Choose the videos")
     path="Data/"
     upload(path)
     load_dataset(path)
 
-  elif option=="3": pick_up_from_google_drive() #This option picks the dataset folder from Google Drive.
-  elif option=="4": 
-    output.clear()
-    return
+  ##elif option=="3": pick_up_from_google_drive() #This option picks the dataset folder from Google Drive.
+  
       
-  else:
-    output.clear()
-    print("Incorrect option")
-    pickSource()
+  
 
 
 
@@ -158,23 +149,16 @@ def pick_up_from_google_drive():
 
 
 #Ask to remove the past files on the data folder
-def ask_clear_data_folder():
+def clear_data_folder(option):
   if os.path.isdir("Data")==False:
     os.mkdir("Data")
   
-  option = input("Do you want to clear Data folder ?\n"+
-      "1.Yes\n"+
-      "2.No\n")
-  if option=="1":
+  if option=="YES":
     print("Removing all files in the data folder")
     shutil.rmtree("Data")
     os.mkdir("Data")
-  elif option=="2":
-    return
-  else:
-    output.clear()
-    print("Incorrect option")
-    ask_clear_data_folder()
+  
+
 
 def load_sample_video():
     
