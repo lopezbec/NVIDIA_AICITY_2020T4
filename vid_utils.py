@@ -9,6 +9,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import json
 import os
+import pkg_resources
+pkg_resources.require("skimage==0.17.2")
+import skimage
 from skimage import measure
 from scipy.signal import savgol_filter
 from matplotlib.patches import Rectangle
