@@ -395,7 +395,7 @@ def change_detect(Base):
             img1 = cv2.imread(base2 + files[idx+10])
             sad = 0
             if np.sum(img1) != 0 and np.sum(img0) !=0:
-                sad = measure.compare_ssim(img0,img1,multichannel=True,win_size=3)
+                sad = measure.structural_similarity(img0,img1,multichannel=True,win_size=3)
             else:
                 sad = 0.99
             stat.append(np.max((0,sad)))
@@ -464,7 +464,7 @@ def backtrack(Bounds, PT,Base):
                   img1 = cv2.imread(base2 + str(idx) +".jpg")[y-h:y+h,x-w:x+w]
                   img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
                  
-                  ssim = measure.compare_ssim(img0,img1,multichannel=True,win_size=3)
+                  ssim = measure.structural_similarity(img0,img1,multichannel=True,win_size=3)
                   
                   
                   data['videos'][len(data['videos'])-1]['imgs1'].append(str(idx)+".jpg")
@@ -561,7 +561,7 @@ def backtrack1(Bounds,Base):
                 'stat':[]
                 })
 
-                stat.append(measure.compare_ssim(img0,img1,multichannel=True,win_size=3))
+                stat.append(measure.structural_similarity(img0,img1,multichannel=True,win_size=3))
 
 
           for idx in range(0,len(stat)-35):
