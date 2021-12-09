@@ -19,7 +19,21 @@ from google.colab.patches import cv2_imshow
 
 
 
+#Function to save anomaly frames of each video
+def save_data(video_name,frame_image):
+  wd=os.getcwd()
 
+  print()
+
+  if not os.path.isdir(wd+"/Output"):
+    os.makedirs(wd+"/Output")
+
+  if not os.path.exists(wd+"/Output/"+ video_name+".txt"):
+    f = open(wd+"/Output/"+ video_name+".txt", "x")
+  f = open(wd+"/Output/"+ video_name+".txt", "a")
+  f.write(frame_image+ ",")
+  f.close()
+  
 def get_videos():
   
   
