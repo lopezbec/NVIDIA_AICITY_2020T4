@@ -518,7 +518,8 @@ def backtrack(Bounds, PT,Base):
                 print(image_counter)
                 print("video name:",video_name)
                 print("frame_image:",frame_image)
-           
+                save_data(video_name,frame_image)
+                
                 img = cv2.imread(Base+video_name+"/"+frame_image,cv2.IMREAD_UNCHANGED)
                 
                 scale_percent = 50 # percent of original size
@@ -612,6 +613,8 @@ def backtrack1(Bounds,Base):
               frame_image=video["img0"]
               print("video name:",video_name)
               print("frame_image:",frame_image)
+              save_data(video_name,frame_image)
+              
               img = cv2.imread(Base+video_name+"/"+frame_image,cv2.IMREAD_UNCHANGED)
                 
               scale_percent = 50 # percent of original size
